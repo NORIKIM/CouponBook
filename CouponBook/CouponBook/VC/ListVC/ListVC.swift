@@ -68,6 +68,7 @@ class ListVC: UIViewController, NSFetchedResultsControllerDelegate, UITableViewD
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         44
     }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath) as! ListTBCell
         let coupon = fetchedResultsController.object(at: indexPath)

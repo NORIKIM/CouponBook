@@ -13,28 +13,30 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate {
 //    var container: NSPersistentCloudKitContainer!
     var fetchedResultsController: NSFetchedResultsController<Coupon>!
     
-
+    @IBOutlet weak var expiredCouponInfoLB: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-//        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-//        self.container = appDelegate.persistentContainer
-//        let viewContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-//        viewContext.automaticallyMergesChangesFromParent = true
-//
-//        self.managedObjectContext = viewContext
         
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         configureFetchedResultsController()
         do {
             try fetchedResultsController.performFetch()
+            if fetchedResultsController.fetchedObjects?.count == 0 {
+                expiredCouponInfoLB.text = "등록된 쿠폰이 없습니다."
+            } else {
+                let coupon = ExpireCoupon().couponInfo(coupons: fetchedResultsController.fetchedObjects!)
+                expiredCouponInfoLB.text = coupon.name
+            }
+            
         } catch {
             print("performfetch error")
         }
-        print("")
-        // fetchedResultsController.sections //
+        
     }
 
     func configureFetchedResultsController() {
