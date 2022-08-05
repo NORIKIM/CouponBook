@@ -10,9 +10,7 @@ import CoreData
 
 class MainVC: UIViewController, NSFetchedResultsControllerDelegate {
     var managedObjectContext: NSManagedObjectContext!
-//    var container: NSPersistentCloudKitContainer!
     var fetchedResultsController: NSFetchedResultsController<Coupon>!
-    
     @IBOutlet weak var expiredCouponInfoLB: UILabel!
     
     override func viewDidLoad() {
@@ -26,17 +24,16 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate {
         configureFetchedResultsController()
         do {
             try fetchedResultsController.performFetch()
-            if fetchedResultsController.fetchedObjects?.count == 0 {
+            let coupons = fetchedResultsController.fetchedObjects
+            if coupons!.count == 0 {
                 expiredCouponInfoLB.text = "등록된 쿠폰이 없습니다."
             } else {
-                let coupon = ExpireCoupon().couponInfo(coupons: fetchedResultsController.fetchedObjects!)
-                expiredCouponInfoLB.text = coupon.name
+                let coupon = ExpireCoupon().couponInfo(coupons: coupons!)
+                expiredCouponInfoLB.text = coupon.expiryDate
             }
-            
         } catch {
             print("performfetch error")
         }
-        
     }
 
     func configureFetchedResultsController() {
