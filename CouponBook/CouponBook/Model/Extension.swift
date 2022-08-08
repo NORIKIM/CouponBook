@@ -93,51 +93,51 @@ class CustomLabel: UILabel {
 
 // UINavigationController ------------------------------------------------------------------------------------
 //https://yungsoyu.medium.com/swift-pop-gesture-swipe-back-gesture-%EB%A1%9C-%EB%92%A4%EB%A1%9C%EA%B0%80%EA%B8%B0-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-7cb2d8f9e814
-class BaseNavigationController: UINavigationController {
-    
-    private var duringTransition = false
-    private var disabledPopVCs = [MainViewController.self, LoginViewController.self]
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        interactivePopGestureRecognizer?.delegate = self
-        self.delegate = self
-    }
-    
-    override func pushViewController(_ viewController: UIViewController, animated: Bool) {
-        duringTransition = true
-        
-        super.pushViewController(viewController, animated: animated)
-    }
-    
-}
-
-extension BaseNavigationController: UINavigationControllerDelegate {
-    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        self.duringTransition = false
-    }
-}
-
-extension BaseNavigationController: UIGestureRecognizerDelegate {
-    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        guard gestureRecognizer == interactivePopGestureRecognizer,
-              let topVC = topViewController else {
-                  return true // default value
-              }
-        
-        return viewControllers.count > 1 && duringTransition == false && isPopGestureEnable(topVC)
-    }
-    
-    private func isPopGestureEnable(_ topVC: UIViewController) -> Bool {
-        for vc in disabledPopVCs {
-            if String(describing: type(of: topVC)) == String(describing: vc) {
-                return false
-            }
-        }
-        return true
-    }
-}
+//class BaseNavigationController: UINavigationController {
+//
+//    private var duringTransition = false
+//    private var disabledPopVCs = [MainViewController.self, LoginViewController.self]
+//
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//
+//        interactivePopGestureRecognizer?.delegate = self
+//        self.delegate = self
+//    }
+//
+//    override func pushViewController(_ viewController: UIViewController, animated: Bool) {
+//        duringTransition = true
+//
+//        super.pushViewController(viewController, animated: animated)
+//    }
+//
+//}
+//
+//extension BaseNavigationController: UINavigationControllerDelegate {
+//    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+//        self.duringTransition = false
+//    }
+//}
+//
+//extension BaseNavigationController: UIGestureRecognizerDelegate {
+//    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+//        guard gestureRecognizer == interactivePopGestureRecognizer,
+//              let topVC = topViewController else {
+//                  return true // default value
+//              }
+//
+//        return viewControllers.count > 1 && duringTransition == false && isPopGestureEnable(topVC)
+//    }
+//
+//    private func isPopGestureEnable(_ topVC: UIViewController) -> Bool {
+//        for vc in disabledPopVCs {
+//            if String(describing: type(of: topVC)) == String(describing: vc) {
+//                return false
+//            }
+//        }
+//        return true
+//    }
+//}
 
 // UIView ------------------------------------------------------------------------------------
 extension UIView {

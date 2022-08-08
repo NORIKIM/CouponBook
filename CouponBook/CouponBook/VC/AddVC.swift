@@ -8,20 +8,36 @@
 import UIKit
 import CoreData
 
-class AddVC: UIViewController, NSFetchedResultsControllerDelegate {
+class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDelegate {
     var manageObjectContext: NSManagedObjectContext!
     var coupon: Coupon!
     // Outlet
     @IBOutlet weak var categoryTF: UITextField!
     @IBOutlet weak var nameTF: UITextField!
-    @IBOutlet weak var expiryDateTF: UITextField!
+    @IBOutlet weak var expiryDateLB: UILabel!
     @IBOutlet weak var priceTF: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let expiryDateGesture = UITapGestureRecognizer(target: self, action: #selector(showDatePicker))
+        expiryDateLB.addGestureRecognizer(expiryDateGesture)
+        
+        
     }
 
+    @objc func showDatePicker() {
+        let datePickerVC = self.storyboard!.instantiateViewController(withIdentifier: "DatePickerVC") as! DatePickerVC
+        datePickerVC.modalPresentationStyle = .overCurrentContext
+        self.present(datePickerVC, animated: false, completion: nil)
+        datePickerVC.datePickerDelegate = self
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        self.manageObjectContext.rollback()
+    }
+    
+    // MARK: - IBAction
     @IBAction func registTap(_ sender: UIButton) {
         if self.coupon == nil {
             self.coupon = (NSEntityDescription.insertNewObject(forEntityName: Coupon.entityName,
@@ -30,7 +46,7 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate {
         
         self.coupon.category = categoryTF.text!
         self.coupon.name = nameTF.text!
-        self.coupon.expiryDate = expiryDateTF.text!
+        self.coupon.expiryDate = expiryDateLB.text!
         self.coupon.price = priceTF.text
         
         do {
@@ -51,8 +67,9 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate {
         }
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        self.manageObjectContext.rollback()
+    // MARK: - DatePickerDelegate
+    func selectDate(str: String) {
+        expiryDateLB.text = str
     }
     
 }
