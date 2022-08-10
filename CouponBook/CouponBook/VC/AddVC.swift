@@ -110,6 +110,11 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
     }
     
     // MARK: - IBAction
+    // 뒤로가기
+    @IBAction func backTap(_ sender: UIButton) {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
     // 분류 선택
     @IBAction func categoryTap(_ sender: UIButton) {
         if sender != category {
