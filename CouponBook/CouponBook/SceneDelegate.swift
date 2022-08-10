@@ -14,12 +14,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
-        guard let _ = (scene as? UIWindowScene) else { return }
-        let navigationVC = self.window?.rootViewController as! UINavigationController
-        let mainVC = navigationVC.viewControllers[0] as! MainVC
-        let viewContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        viewContext.automaticallyMergesChangesFromParent = true
-        mainVC.managedObjectContext = viewContext
+//        guard let _ = (scene as? UIWindowScene) else { return }
+//        let navigationVC = self.window?.rootViewController as! UINavigationController
+//        let mainVC = navigationVC.viewControllers[0] as! MainVC
+//        let viewContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+//        viewContext.automaticallyMergesChangesFromParent = true
+//        mainVC.managedObjectContext = viewContext
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
