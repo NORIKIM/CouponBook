@@ -486,6 +486,7 @@
                         <outlet property="memoTV" destination="HzD-B0-Cjo" id="x2P-GS-cGm"/>
                         <outlet property="nameTF" destination="Shm-Uh-20T" id="nX8-O2-B8J"/>
                         <outlet property="priceTF" destination="W8O-of-uwH" id="F2G-Bt-EtL"/>
+                        <outlet property="scroll" destination="2kv-Ve-FJK" id="aAH-af-pWq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

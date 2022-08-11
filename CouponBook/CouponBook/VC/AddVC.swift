@@ -14,6 +14,7 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
     var category: UIButton!
     
     // Outlet
+    @IBOutlet weak var scroll: UIScrollView!
     @IBOutlet weak var nameTF: UITextField!
     @IBOutlet weak var expiryDateTF: UITextField!
     @IBOutlet weak var priceTF: UITextField!
@@ -48,7 +49,15 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         NotificationCenter.default.removeObserver(self, name:UIResponder.keyboardWillHideNotification, object: nil)
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
     func setUI() {
+        // scroll tap 키보드 내림
+        let scrollTapKeyboardHide = UITapGestureRecognizer(target: self, action: #selector(scrollTapKeyboardHide(sender:)))
+        scroll.addGestureRecognizer(scrollTapKeyboardHide)
+        
         // 유효기간 입력 텍스트 필드
         let expiryDateGesture = UITapGestureRecognizer(target: self, action: #selector(showDatePicker))
         expiryDateTF.addGestureRecognizer(expiryDateGesture)
@@ -80,26 +89,34 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         memoTV.layer.borderColor = UIColor(red: 233, green: 233, blue: 233, alpha: 1).cgColor
         
         // 키보드
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboard(noti:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboard(noti:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardHandler(noti:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardHandler(noti:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    @objc func keyboard(noti: NSNotification) {
+    @objc func keyboardHandler(noti: NSNotification) {
         let isKeyboardShowing = noti.name == UIResponder.keyboardWillShowNotification
         guard let keyboardSize = (noti.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {return}
         
-        if memoTV.isFirstResponder {
-//            if keyboardSize.height == 0.0 || isKeyboardShowing == true {
-//                return
-//            }
-            
-            UIView.animate(withDuration: 0.33, animations: { () -> Void in
-                if self.view.frame.origin.y == nil { self.view.frame.origin.y = self.view.frame.origin.y }
-                self.view.frame.origin.y = self.view.frame.origin.y - keyboardSize.height
-            }, completion: {_ in
-                //isKeyboardShowing = true
-            })
+        if isKeyboardShowing {
+            let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
+            self.scroll.contentInset = contentInsets
+            self.scroll.scrollIndicatorInsets = contentInsets
+            let scrollPoint = CGPoint(x: 0, y: self.scroll.frame.origin.y + keyboardSize.height)
+            self.scroll.setContentOffset(scrollPoint, animated: false)
+        } else {
+            let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            self.scroll.contentInset = contentInsets
+            self.scroll.scrollIndicatorInsets = contentInsets
+            let scrollPoint = CGPoint(x: 0, y: self.scroll.frame.origin.y)
+            self.scroll.setContentOffset(scrollPoint, animated: false)
         }
+    }
+    
+    @objc func scrollTapKeyboardHide(sender: UITapGestureRecognizer) {
+        if sender.state == .ended {
+            view.endEditing(true)
+        }
+        sender.cancelsTouchesInView = false
     }
     
     @objc func showDatePicker() {
