@@ -8,7 +8,7 @@
 import UIKit
 import CoreData
 
-class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDelegate {
+class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDelegate, UITextFieldDelegate {
     var manageObjectContext: NSManagedObjectContext!
     var coupon: Coupon!
     var category: UIButton!
@@ -61,6 +61,9 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         // 유효기간 입력 텍스트 필드
         let expiryDateGesture = UITapGestureRecognizer(target: self, action: #selector(showDatePicker))
         expiryDateTF.addGestureRecognizer(expiryDateGesture)
+        
+        // 금액 textField delegate 연결
+        priceTF.delegate = self
         
         // 사진 추가 버튼
         addPhotoBTN.layer.cornerRadius = 20
@@ -124,6 +127,27 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         datePickerVC.modalPresentationStyle = .overCurrentContext
         self.present(datePickerVC, animated: false, completion: nil)
         datePickerVC.datePickerDelegate = self
+    }
+    
+    // MARK: - textFieldDelegate
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let numberFormat = NumberFormatter()
+        numberFormat.numberStyle = .decimal
+        numberFormat.locale = Locale.current // 지역에 따른 .decimal의 차이를 반영 (디바이스에 설정된 지역으로 값 설정)
+        numberFormat.maximumFractionDigits = 0 // 소숫점을 허용하지 않을 때 0 설정
+        
+        // numberFormat.groupingSeparator = .decimal의 구분점을 의미
+        // with: "" = 이 구분점을 ""으로 대체한다는 것으로 ','를 제거한다는 의미
+        if let removeAllSeparator = textField.text?.replacingOccurrences(of: numberFormat.groupingSeparator, with: "") {
+            var beforeFormatting = removeAllSeparator + string // ','가 제거된 문자열과 새로 입력된 문자열을 합침
+            if numberFormat.number(from: string) != nil {
+                if let formattedNumber = numberFormat.number(from: beforeFormatting), let formatString = numberFormat.string(from: formattedNumber) {
+                    textField.text = formatString
+                    return false
+                }
+            }
+        }
+        return true
     }
     
     // MARK: - IBAction
