@@ -96,7 +96,7 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardHandler(noti:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    // MARK: - @objc
+    // MARK: - @objc - 키보드
     // 키보드 핸들러
     @objc func keyboardHandler(noti: NSNotification) {
         let isKeyboardShowing = noti.name == UIResponder.keyboardWillShowNotification
@@ -125,6 +125,23 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         sender.cancelsTouchesInView = false
     }
     
+    // MARK: - IBAction - 뒤로가기
+    @IBAction func backTap(_ sender: UIButton) {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    // MARK: - IBAction - 분류
+    @IBAction func categoryTap(_ sender: UIButton) {
+        if sender != category {
+            sender.backgroundColor = UIColor(red: 210, green: 249, blue: 245, alpha: 1)
+            if category != nil {
+                category.backgroundColor = UIColor.white
+            }
+            category = sender
+        }
+    }
+        
+    // MARK: - @objc - 유효기간
     // 유효기간 텍스트필드 선택하면 데이트피커뷰 팝
     @objc func showDatePicker() {
         let datePickerVC = self.storyboard!.instantiateViewController(withIdentifier: "DatePickerVC") as! DatePickerVC
@@ -133,7 +150,12 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         datePickerVC.datePickerDelegate = self
     }
     
-    // MARK: - textFieldDelegate
+    // DatePickerDelegate
+    func selectDate(str: String) {
+        expiryDateTF.text = str
+    }
+    
+    // MARK: - textFieldDelegate - 금액
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let numberFormat = NumberFormatter()
         numberFormat.numberStyle = .decimal
@@ -154,24 +176,12 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         return true
     }
     
-    // MARK: - IBAction
-    // 뒤로가기
-    @IBAction func backTap(_ sender: UIButton) {
-        self.navigationController?.popViewController(animated: true)
+    // MARK: - IBAction - 사진 추가
+    @IBAction func photoPicTap(_ sender: UIButton) {
+        
     }
     
-    // 분류 선택
-    @IBAction func categoryTap(_ sender: UIButton) {
-        if sender != category {
-            sender.backgroundColor = UIColor(red: 210, green: 249, blue: 245, alpha: 1)
-            if category != nil {
-                category.backgroundColor = UIColor.white
-            }
-            category = sender
-        }
-    }
-    
-    // 저장
+    // MARK: - IBAction - 등록
     @IBAction func registTap(_ sender: UIButton) {
         if self.coupon == nil {
             self.coupon = (NSEntityDescription.insertNewObject(forEntityName: Coupon.entityName,
@@ -200,9 +210,6 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         }
     }
         
-    // MARK: - DatePickerDelegate
-    func selectDate(str: String) {
-        expiryDateTF.text = str
-    }
+    
     
 }
