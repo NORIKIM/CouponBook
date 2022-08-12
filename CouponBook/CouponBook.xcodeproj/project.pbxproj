@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D31274FA7FB62FFB1306425 /* Pods_CouponBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F33EE1BDF41C33BA63578D4 /* Pods_CouponBook.framework */; };
 		9D21AFA4289D111800E8BC60 /* DatePickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D21AFA3289D111800E8BC60 /* DatePickerVC.swift */; };
 		9D21AFA628A0CFEA00E8BC60 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D21AFA528A0CFEA00E8BC60 /* Extension.swift */; };
 		9D67006528890FDE00985909 /* Coupon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D67006428890FDE00985909 /* Coupon.swift */; };
@@ -47,6 +48,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7F33EE1BDF41C33BA63578D4 /* Pods_CouponBook.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CouponBook.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D21AFA3289D111800E8BC60 /* DatePickerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerVC.swift; sourceTree = "<group>"; };
 		9D21AFA528A0CFEA00E8BC60 /* Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		9D67006428890FDE00985909 /* Coupon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coupon.swift; sourceTree = "<group>"; };
@@ -72,6 +74,8 @@
 		9D7EDAE328781400000B7847 /* Coupon+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coupon+CoreDataClass.swift"; sourceTree = "<group>"; };
 		9D7EDAE428781400000B7847 /* Coupon+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coupon+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		9D7EDAE72878154F000B7847 /* AddVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddVC.swift; sourceTree = "<group>"; };
+		F5761D2CE80ED7507A239BB0 /* Pods-CouponBook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CouponBook.debug.xcconfig"; path = "Target Support Files/Pods-CouponBook/Pods-CouponBook.debug.xcconfig"; sourceTree = "<group>"; };
+		F7FC567920FC45D49F8985F9 /* Pods-CouponBook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CouponBook.release.xcconfig"; path = "Target Support Files/Pods-CouponBook/Pods-CouponBook.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +84,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9D7EDAE228780552000B7847 /* CloudKit.framework in Frameworks */,
+				6D31274FA7FB62FFB1306425 /* Pods_CouponBook.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,6 +153,7 @@
 				9D7EDACF2877F8A4000B7847 /* CouponBookUITests */,
 				9D7EDAAA2877F8A0000B7847 /* Products */,
 				9D7EDAE028780552000B7847 /* Frameworks */,
+				AA4DCD6D40C687BD5EB6E82E /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -199,8 +205,19 @@
 			isa = PBXGroup;
 			children = (
 				9D7EDAE128780552000B7847 /* CloudKit.framework */,
+				7F33EE1BDF41C33BA63578D4 /* Pods_CouponBook.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AA4DCD6D40C687BD5EB6E82E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F5761D2CE80ED7507A239BB0 /* Pods-CouponBook.debug.xcconfig */,
+				F7FC567920FC45D49F8985F9 /* Pods-CouponBook.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -210,9 +227,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9D7EDAD62877F8A4000B7847 /* Build configuration list for PBXNativeTarget "CouponBook" */;
 			buildPhases = (
+				9B463F557CFF508A52A688C2 /* [CP] Check Pods Manifest.lock */,
 				9D7EDAA52877F8A0000B7847 /* Sources */,
 				9D7EDAA62877F8A0000B7847 /* Frameworks */,
 				9D7EDAA72877F8A0000B7847 /* Resources */,
+				6B3E5D8C2CB71C8C6B77FDBB /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -329,6 +348,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6B3E5D8C2CB71C8C6B77FDBB /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CouponBook/Pods-CouponBook-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CouponBook/Pods-CouponBook-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CouponBook/Pods-CouponBook-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9B463F557CFF508A52A688C2 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CouponBook-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		9D7EDAA52877F8A0000B7847 /* Sources */ = {
@@ -520,6 +581,7 @@
 		};
 		9D7EDAD72877F8A4000B7847 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F5761D2CE80ED7507A239BB0 /* Pods-CouponBook.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -553,6 +615,7 @@
 		};
 		9D7EDAD82877F8A4000B7847 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F7FC567920FC45D49F8985F9 /* Pods-CouponBook.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
