@@ -75,7 +75,7 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
             addPhotoBTN.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 13, right: 10)
         }
         
-        // 이미지뷰
+        // 이미지뷰 점선 테두리 적용
         for img in [img1View,img2View,img3View,img4View] {
             let borderLayer = CAShapeLayer()
             borderLayer.strokeColor = UIColor.black.cgColor
@@ -96,6 +96,8 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardHandler(noti:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
+    // MARK: - @objc
+    // 키보드 핸들러
     @objc func keyboardHandler(noti: NSNotification) {
         let isKeyboardShowing = noti.name == UIResponder.keyboardWillShowNotification
         guard let keyboardSize = (noti.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {return}
@@ -115,6 +117,7 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         }
     }
     
+    // 스크롤뷰 탭하면 키보드 내림
     @objc func scrollTapKeyboardHide(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
             view.endEditing(true)
@@ -122,6 +125,7 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         sender.cancelsTouchesInView = false
     }
     
+    // 유효기간 텍스트필드 선택하면 데이트피커뷰 팝
     @objc func showDatePicker() {
         let datePickerVC = self.storyboard!.instantiateViewController(withIdentifier: "DatePickerVC") as! DatePickerVC
         datePickerVC.modalPresentationStyle = .overCurrentContext
