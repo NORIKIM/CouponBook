@@ -9,6 +9,6 @@
         <attribute name="price" optional="YES" attributeType="String"/>
     </entity>
     <elements>
-        <element name="Coupon" positionX="-36" positionY="9" width="128" height="119"/>
+        <element name="Coupon" positionX="-36" positionY="9" width="128" height="133"/>
     </elements>
 </model>

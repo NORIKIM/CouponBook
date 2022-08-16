@@ -13,7 +13,7 @@ import BSImagePicker
 class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDelegate, UITextFieldDelegate {
     // property
     var manageObjectContext: NSManagedObjectContext!
-    var coupon: Coupon!
+    var coupon: Coupon?
     var category: UIButton!
 //    var photoSuperArr = [UIView]()
     var photoArr = [UIImageView]()
@@ -270,10 +270,22 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
             self.coupon = (NSEntityDescription.insertNewObject(forEntityName: Coupon.entityName,
                                                                into: self.manageObjectContext) as! Coupon)
         }
-        self.coupon.category = (category.titleLabel?.text)!
-        self.coupon.name = nameTF.text!
-        self.coupon.expiryDate = expiryDateTF.text!
-        self.coupon.price = priceTF.text
+        let entityName =  NSEntityDescription.entity(forEntityName: Coupon.entityName, in: manageObjectContext)!
+        let image = NSManagedObject(entity: entityName, insertInto: manageObjectContext)
+        self.coupon?.category = (category.titleLabel?.text)!
+        self.coupon?.name = nameTF.text!
+        self.coupon?.expiryDate = expiryDateTF.text!
+        self.coupon?.price = priceTF.text
+        self.coupon?.contentText = memoTV.text
+        
+        var images: Data?
+        do {
+            images = try NSKeyedArchiver.archivedData(withRootObject: convertImageToData(myImagesArray: photos), requiringSecureCoding: true)
+        } catch {
+            print("error")
+        }
+        image.setValue(images, forKeyPath: "contentImg")
+        // 참고: https://blog.devgenius.io/saving-images-in-coredata-8739690d0520
         
         do {
             try self.manageObjectContext.save()
@@ -292,7 +304,13 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
             self.present(alert, animated: true, completion: nil)
         }
     }
-        
     
+    func convertImageToData(myImagesArray: [UIImage]) -> [Data] {
+        var myImagesDataArray = [Data]()
+        myImagesArray.forEach({ (image) in
+            myImagesDataArray.append(image.pngData()!)
+        })
+        return myImagesDataArray
+    }
     
 }

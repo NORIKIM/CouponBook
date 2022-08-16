@@ -216,7 +216,6 @@
 				F5761D2CE80ED7507A239BB0 /* Pods-CouponBook.debug.xcconfig */,
 				F7FC567920FC45D49F8985F9 /* Pods-CouponBook.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
