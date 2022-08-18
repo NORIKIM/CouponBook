@@ -10,16 +10,32 @@ import CoreData
 import PhotosUI
 import BSImagePicker
 
-class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDelegate, UITextFieldDelegate {
+class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDelegate, UITextFieldDelegate, PHPickerViewControllerDelegate {
     // property
     var manageObjectContext: NSManagedObjectContext!
     var coupon: Coupon?
     var category: UIButton!
-//    var photoSuperArr = [UIView]()
     var photoArr = [UIImageView]()
     var clearArr = [UIButton]()
     var photos = [UIImage]()
-
+    /// for iOS 15.0* imagePic
+    private var selectedAssetIdentifiers = [String]()
+    private var selectedAssetIdentifierIterator: IndexingIterator<[String]>?
+    private var currentAssetIdentifier: String?
+    private var _selection: Any? = nil
+    @available(iOS 15, *)
+    var selection: [String: PHPickerResult] {
+        get {
+            if _selection == nil {
+                _selection = [String: PHPickerResult]()
+            }
+            return _selection as! [String: PHPickerResult]
+        }
+        set {
+            
+        }
+        
+    }
     // Outlet
     @IBOutlet weak var scroll: UIScrollView!
     @IBOutlet weak var nameTF: UITextField!
@@ -195,35 +211,11 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
     
     // MARK: - 사진 추가
     @IBAction func photoPicTap(_ sender: UIButton) {
-        let imagePicker = ImagePickerController()
-        imagePicker.settings.selection.max = 4 - photos.count
-        imagePicker.settings.theme.selectionStyle = .numbered
-        imagePicker.settings.fetch.assets.supportedMediaTypes = [.image]
-        imagePicker.settings.selection.unselectOnReachingMax = false
-        
-        let start = Date()
-        
-        self.presentImagePicker(imagePicker, select: { (asset) in
-            print("Selected: \(asset)")
-            let img = self.getAssetThumbnail(asset: asset)
-            self.photos.append(img)
-        }, deselect: { (asset) in
-            print("Deselected: \(asset)")
-            let img = self.getAssetThumbnail(asset: asset)
-            guard let idx = self.photos.firstIndex(of: img) else { return }
-            self.photos.remove(at: idx)
-        }, cancel: { (assets) in
-            print("Canceled with selections: \(assets)")
-        }, finish: { (assets) in
-            print("Finished with selections: \(assets)")
-            for idx in 0 ..< self.photos.count {
-                self.photoArr[idx].image = self.photos[idx]
-                self.clearArr[idx].isHidden = false
-            }
-        }, completion: {
-            let finish = Date()
-            print(finish.timeIntervalSince(start))
-        })
+        if #available(iOS 15.0, *) {
+            presentPicker(filter: nil)
+        } else {
+            imagePic()
+        }
     }
     
     // PHAsset -> UIImage
@@ -305,12 +297,131 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         }
     }
     
+    // coreData에 [이미지] 저장하기
     func convertImageToData(myImagesArray: [UIImage]) -> [Data] {
         var myImagesDataArray = [Data]()
         myImagesArray.forEach({ (image) in
             myImagesDataArray.append(image.pngData()!)
         })
         return myImagesDataArray
+    }
+    
+}
+
+// 사진첩에서 사진 선택
+extension AddVC {
+    // iOS 14 이하
+    func imagePic() {
+        let imagePicker = ImagePickerController()
+        imagePicker.settings.selection.max = 4 - photos.count
+        imagePicker.settings.theme.selectionStyle = .numbered
+        imagePicker.settings.fetch.assets.supportedMediaTypes = [.image]
+        imagePicker.settings.selection.unselectOnReachingMax = false
+                
+        self.presentImagePicker(imagePicker, select: { (asset) in
+            print("Selected: \(asset)")
+            let img = self.getAssetThumbnail(asset: asset)
+            self.photos.append(img)
+        }, deselect: { (asset) in
+            print("Deselected: \(asset)")
+            let img = self.getAssetThumbnail(asset: asset)
+            guard let idx = self.photos.firstIndex(of: img) else { return }
+            self.photos.remove(at: idx)
+        }, cancel: { (assets) in
+            print("Canceled with selections: \(assets)")
+        }, finish: { (assets) in
+            print("Finished with selections: \(assets)")
+            for idx in 0 ..< self.photos.count {
+                self.photoArr[idx].image = self.photos[idx]
+                self.clearArr[idx].isHidden = false
+            }
+        }, completion: {})
+    }
+    
+    // iOS 15 이상
+    /// 사진 선택창 present
+    @available(iOS 15, *)
+    private func presentPicker(filter: PHPickerFilter?) {
+        var configuration = PHPickerConfiguration(photoLibrary: .shared())
+        configuration.filter = filter
+        configuration.preferredAssetRepresentationMode = .current
+        if #available(iOS 15, *) {
+            configuration.selection = .ordered
+        }
+        configuration.selectionLimit = 4 - photos.count
+        configuration.preselectedAssetIdentifiers = selectedAssetIdentifiers
+        
+        let picker = PHPickerViewController(configuration: configuration)
+        picker.delegate = self
+        present(picker, animated: true)
+    }
+    
+    /// 사진 선택이 끝난 후
+    @available(iOS 14, *)
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        dismiss(animated: true)
+        
+        if #available(iOS 15, *) {
+            let existingSelection = self.selection
+            var newSelection = [String: PHPickerResult]()
+            
+            for result in results {
+                let identifier = result.assetIdentifier!
+                newSelection[identifier] = existingSelection[identifier] ?? result
+            }
+            
+            selection = newSelection
+            selectedAssetIdentifiers = results.map(\.assetIdentifier!)
+            selectedAssetIdentifierIterator = selectedAssetIdentifiers.makeIterator()
+            
+            displayNext()
+        }
+    }
+    
+    @available(iOS 15, *)
+    func displayNext() { // 15테스트 후 불필요 확인
+        guard let assetIdentifier = selectedAssetIdentifierIterator?.next() else { return }
+        currentAssetIdentifier = assetIdentifier
+        
+        let progress: Progress?
+        let itemProvider = selection[assetIdentifier]!.itemProvider
+        if itemProvider.canLoadObject(ofClass: PHLivePhoto.self) {
+            progress = itemProvider.loadObject(ofClass: PHLivePhoto.self) { [weak self] livePhoto, error in
+                DispatchQueue.main.async {
+                    self?.handleCompletion(assetIdentifier: assetIdentifier, object: livePhoto, error: error)
+                }
+            }
+        }
+        else if itemProvider.canLoadObject(ofClass: UIImage.self) {
+            progress = itemProvider.loadObject(ofClass: UIImage.self) { [weak self] image, error in
+                DispatchQueue.main.async {
+                    self?.handleCompletion(assetIdentifier: assetIdentifier, object: image, error: error)
+                }
+            }
+        } else {
+            progress = nil
+        }
+        
+        displayProgress(progress)
+    }
+    
+    func handleCompletion(assetIdentifier: String, object: Any?, error: Error? = nil) {
+        guard currentAssetIdentifier == assetIdentifier else { return }
+        if let livePhoto = object as? PHLivePhoto {
+        } else if let image = object as? UIImage {
+            displayImage(image)
+        }
+    }
+    
+    func displayProgress(_ progress: Progress?) {
+//        imageView.image = nil
+//        imageView.isHidden = true
+    }
+
+    
+    func displayImage(_ image: UIImage?) {
+//        imageView.image = image
+//        imageView.isHidden = image == nil
     }
     
 }
