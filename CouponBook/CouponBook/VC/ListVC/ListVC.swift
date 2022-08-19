@@ -11,6 +11,7 @@ import CoreData
 class ListVC: UIViewController, NSFetchedResultsControllerDelegate, UITableViewDataSource, UITableViewDelegate {
     var managedObjectContext: NSManagedObjectContext!
     var fetchedResultsController: NSFetchedResultsController<Coupon>!
+    var category = ""
     @IBOutlet weak var listTB: UITableView!
     
     override func viewDidLoad() {
@@ -36,6 +37,10 @@ class ListVC: UIViewController, NSFetchedResultsControllerDelegate, UITableViewD
         let fetchRequest = NSFetchRequest<Coupon>(entityName: "Coupon")
         let sortBase = NSSortDescriptor(key: "name", ascending: true)
         fetchRequest.sortDescriptors = [sortBase]
+        if category != "전체" {
+            let predicate = NSPredicate(format: "category = %@", category)
+            fetchRequest.predicate = predicate
+        }
         fetchedResultsController = NSFetchedResultsController<Coupon>(fetchRequest: fetchRequest,
                                                                       managedObjectContext: self.managedObjectContext,
                                                                       sectionNameKeyPath: nil,
