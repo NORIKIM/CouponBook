@@ -10,9 +10,12 @@ import CoreData
 import PhotosUI
 import BSImagePicker
 
-class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDelegate, UITextFieldDelegate, PHPickerViewControllerDelegate {
+class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDelegate, UITextFieldDelegate, PHPickerViewControllerDelegate, UITextViewDelegate {
+    var fffff: NSFetchedResultsController<Coupon>!
     // property
     var manageObjectContext: NSManagedObjectContext!
+    var keyboardSize = 0
+    var isKeyboardShowing = false
     var coupon: Coupon?
     var category: UIButton!
     var photoArr = [UIImageView]()
@@ -123,6 +126,7 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         memoTV.layer.cornerRadius = 10
         memoTV.layer.borderWidth = 1
         memoTV.layer.borderColor = UIColor(red: 233, green: 233, blue: 233, alpha: 1).cgColor
+        memoTV.delegate = self
         
         // 키보드
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardHandler(noti:)), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -132,22 +136,8 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
     // MARK: - @objc - 키보드
     // 키보드 핸들러
     @objc func keyboardHandler(noti: NSNotification) {
-        let isKeyboardShowing = noti.name == UIResponder.keyboardWillShowNotification
         guard let keyboardSize = (noti.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {return}
-        
-        if isKeyboardShowing {
-            let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
-            self.scroll.contentInset = contentInsets
-            self.scroll.scrollIndicatorInsets = contentInsets
-            let scrollPoint = CGPoint(x: 0, y: self.scroll.frame.origin.y + keyboardSize.height)
-            self.scroll.setContentOffset(scrollPoint, animated: false)
-        } else {
-            let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            self.scroll.contentInset = contentInsets
-            self.scroll.scrollIndicatorInsets = contentInsets
-            let scrollPoint = CGPoint(x: 0, y: self.scroll.frame.origin.y)
-            self.scroll.setContentOffset(scrollPoint, animated: false)
-        }
+        self.keyboardSize = Int(keyboardSize.height)
     }
     
     // 스크롤뷰 탭하면 키보드 내림
@@ -156,6 +146,12 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
             view.endEditing(true)
         }
         sender.cancelsTouchesInView = false
+        // 키보드 내려가면 스크롤 위치 재조정
+        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        self.scroll.contentInset = contentInsets
+        self.scroll.scrollIndicatorInsets = contentInsets
+        let scrollPoint = CGPoint(x: 0, y: self.scroll.frame.origin.y)
+        self.scroll.setContentOffset(scrollPoint, animated: false)
     }
     
     // MARK: - IBAction - 뒤로가기
@@ -256,27 +252,32 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         photos.remove(at: tag)
     }
     
+    // MARK: - 메모
+    // 메모 편집 시작 되면 스크롤 올림
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: CGFloat(keyboardSize), right: 0)
+        self.scroll.contentInset = contentInsets
+        self.scroll.scrollIndicatorInsets = contentInsets
+        let scrollPoint = CGPoint(x: 0, y: Int(self.scroll.frame.origin.y) + keyboardSize)
+        self.scroll.setContentOffset(scrollPoint, animated: true)
+    }
+ 
     // MARK: - IBAction - 등록
     @IBAction func registTap(_ sender: UIButton) {
-        if self.coupon == nil {
-            self.coupon = (NSEntityDescription.insertNewObject(forEntityName: Coupon.entityName,
-                                                               into: self.manageObjectContext) as! Coupon)
-        }
         let entityName =  NSEntityDescription.entity(forEntityName: Coupon.entityName, in: manageObjectContext)!
-        let image = NSManagedObject(entity: entityName, insertInto: manageObjectContext)
-        self.coupon?.category = (category.titleLabel?.text)!
-        self.coupon?.name = nameTF.text!
-        self.coupon?.expiryDate = expiryDateTF.text!
-        self.coupon?.price = priceTF.text
-        self.coupon?.contentText = memoTV.text
-        
+        let coupon = NSManagedObject(entity: entityName, insertInto: manageObjectContext)
+        coupon.setValue(category.titleLabel?.text, forKey: "category")
+        coupon.setValue(nameTF.text!, forKey: "name")
+        coupon.setValue(expiryDateTF.text!, forKey: "expiryDate")
+        coupon.setValue(priceTF.text, forKey: "price")
+        coupon.setValue(memoTV.text, forKey: "contentText")
         var images: Data?
         do {
-            images = try NSKeyedArchiver.archivedData(withRootObject: convertImageToData(myImagesArray: photos), requiringSecureCoding: true)
+            images = try NSKeyedArchiver.archivedData(withRootObject: convertImageToData(imgArr: photos), requiringSecureCoding: true)
         } catch {
-            print("error")
+            print("image archiveData error")
         }
-        image.setValue(images, forKeyPath: "contentImg")
+        coupon.setValue(images, forKeyPath: "contentImg")
         // 참고: https://blog.devgenius.io/saving-images-in-coredata-8739690d0520
         
         do {
@@ -298,16 +299,17 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
     }
     
     // coreData에 [이미지] 저장하기
-    func convertImageToData(myImagesArray: [UIImage]) -> [Data] {
-        var myImagesDataArray = [Data]()
-        myImagesArray.forEach({ (image) in
-            myImagesDataArray.append(image.pngData()!)
+    func convertImageToData(imgArr: [UIImage]) -> [Data] {
+        var imgDataArr = [Data]()
+        imgArr.forEach({ (image) in
+            imgDataArr.append(image.pngData()!)
         })
-        return myImagesDataArray
+        return imgDataArr
     }
     
 }
 
+// MARK: - extension 사진선택
 // 사진첩에서 사진 선택
 extension AddVC {
     // iOS 14 이하
