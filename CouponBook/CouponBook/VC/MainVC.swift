@@ -15,7 +15,8 @@ import CoreData
 class MainVC: UIViewController, NSFetchedResultsControllerDelegate {
     var managedObjectContext: NSManagedObjectContext!
     var fetchedResultsController: NSFetchedResultsController<Coupon>!
-    let category = CouponData().setCategory()
+    let category = CouponData.shared.setCategory()
+    var couponList = [Coupon]()
     @IBOutlet weak var expiredCouponInfoLB: UILabel!
     @IBOutlet weak var infoScroll: UIScrollView!
     @IBOutlet weak var categoryScroll: UIScrollView!
@@ -23,6 +24,7 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+//        configureFetchedResultsController()
         setUI()
         setCategory()
     }
@@ -33,13 +35,20 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate {
         configureFetchedResultsController()
         do {
             try fetchedResultsController.performFetch()
-            let coupons = fetchedResultsController.fetchedObjects
-            if coupons!.count == 0 {
-                expiredCouponInfoLB.text = "등록된 쿠폰이 없습니다."
-            } else {
-                let coupon = CouponData().couponInfo(coupons: coupons!)
-                expiredCouponInfoLB.text = coupon.expiryDate
+            guard let coupons = fetchedResultsController.fetchedObjects else { return }
+            self.couponList = coupons
+            if couponList.count != 0 {
+//                CouponData.shared.expire(coupons: couponList)
             }
+            
+//            self.setExpireCouponInfoScroll()
+//            if coupons.count == 0 {
+//                expiredCouponInfoLB.text = "등록된 쿠폰이 없습니다."
+//            } else {
+//                let coupon = CouponData().couponInfo(coupons: coupons)
+//                expiredCouponInfoLB.text = coupon.expiryDate
+//            }
+            
         } catch {
             print("performfetch error")
         }
@@ -58,12 +67,33 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate {
     
     func setUI() {
         addBTN.layer.cornerRadius = 30
+        
+//        float inset = (self.view.bounds.size.width - cellWidth) / 2.0; // 셀의 양쪽 마진
+//        let inset = 
+    }
+    
+    func setExpireCouponInfoScroll() {
+        let expireList = UserDefaults.standard.object(forKey: UserDefaultKey.closeDate.rawValue) as! [Coupon]
+        var width = 0
+        
+        for idx in 0 ..< expireList.count {
+            let background = UIImageView(frame: CGRect(x: 60, y: 10, width: infoScroll.frame.size.width - 120, height: infoScroll.frame.size.height - 20))
+            background.image = UIImage(named: "ticket")
+            let infoLB = UILabel(frame: CGRect(x: background.frame.origin.x - 40, y: background.frame.origin.y + 20, width: background.frame.size.width - 40, height: background.frame.size.height - 60))
+            infoLB.text = "asdf"
+            infoLB.textAlignment = .center
+            background.addSubview(infoLB)
+            infoScroll.addSubview(background)
+        }
+        
+        infoScroll.contentSize = CGSize(width: self.view.frame.size.width, height: 170)
     }
     
     // MARK: - 등록 버튼
     @IBAction func showAddVC(_ sender: UIButton) {
         let addVC = self.storyboard?.instantiateViewController(withIdentifier: "addVC") as! AddVC
         addVC.manageObjectContext = self.managedObjectContext
+        addVC.fffff = fetchedResultsController
         self.navigationController?.pushViewController(addVC, animated: true)
     }
     
