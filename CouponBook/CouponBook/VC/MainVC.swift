@@ -43,7 +43,7 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
 
     func configureFetchedResultsController() {
         let fetchRequest = NSFetchRequest<Coupon>(entityName: "Coupon")
-        let sortBase = NSSortDescriptor(key: "name", ascending: true)
+        let sortBase = NSSortDescriptor(key: "index", ascending: true)
         fetchRequest.sortDescriptors = [sortBase]
         fetchedResultsController = NSFetchedResultsController<Coupon>(fetchRequest: fetchRequest,
                                                                       managedObjectContext: self.managedObjectContext,
@@ -100,7 +100,7 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ExpireCouponCell", for: indexPath) as! ExpireCouponCell
         if let expireList = UserDefaults.standard.object(forKey:UserDefaultKey.closeDate.rawValue) as? [Int32] {
-            let idx = Int(expireList[indexPath.item]-1)
+            let idx = Int(expireList[indexPath.item])
             cell.infoLB.text = "\(couponList[idx].name)\n\(couponList[idx].expiryDate)"
         } else {
             cell.infoLB.text = "등록"

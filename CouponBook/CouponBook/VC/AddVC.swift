@@ -10,8 +10,12 @@ import CoreData
 import PhotosUI
 import BSImagePicker
 
+protocol AddDelegate {
+    func afterAdd(isSuccess: Bool)
+}
+
 class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDelegate, UITextFieldDelegate, PHPickerViewControllerDelegate, UITextViewDelegate {
-    var fffff: NSFetchedResultsController<Coupon>!
+    var delegate: AddDelegate!
     // property
     var manageObjectContext: NSManagedObjectContext!
     var keyboardSize = 0
@@ -266,6 +270,9 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
     @IBAction func registTap(_ sender: UIButton) {
         let entityName =  NSEntityDescription.entity(forEntityName: Coupon.entityName, in: manageObjectContext)!
         let coupon = NSManagedObject(entity: entityName, insertInto: manageObjectContext)
+        let index = UserDefaults.standard.integer(forKey: UserDefaultKey.index.rawValue)
+        
+        coupon.setValue(index, forKey: "index")
         coupon.setValue(category.titleLabel?.text, forKey: "category")
         coupon.setValue(nameTF.text!, forKey: "name")
         coupon.setValue(expiryDateTF.text!, forKey: "expiryDate")
@@ -282,7 +289,9 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         
         do {
             try self.manageObjectContext.save()
+            UserDefaults.standard.set(index + 1, forKey: UserDefaultKey.index.rawValue)
             _ = self.navigationController?.popViewController(animated: true)
+            self.delegate.afterAdd(isSuccess: true)
         } catch {
             let alert = UIAlertController(title: "Trouble Saving",
                                           message: "Something went wrong when trying to save the Blog Idea.  Please try again...",
