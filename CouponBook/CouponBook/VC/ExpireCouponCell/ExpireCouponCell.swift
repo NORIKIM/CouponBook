@@ -8,7 +8,8 @@
 import UIKit
 
 class ExpireCouponCell: UICollectionViewCell {
-
+    @IBOutlet weak var infoLB: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

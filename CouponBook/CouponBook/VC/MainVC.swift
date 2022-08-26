@@ -12,46 +12,33 @@ import CoreData
  이미지 참조: <a href="https://www.flaticon.com/free-icons/cinema-tickets" title="cinema tickets icons">Cinema tickets icons created by murmur - Flaticon</a>
  <a href="https://www.flaticon.com/free-icons/convenience-store" title="convenience store icons">Convenience store icons created by Voysla - Flaticon</a>
  */
-class MainVC: UIViewController, NSFetchedResultsControllerDelegate {
+class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, AddDelegate {
     var managedObjectContext: NSManagedObjectContext!
     var fetchedResultsController: NSFetchedResultsController<Coupon>!
     let category = CouponData.shared.setCategory()
     var couponList = [Coupon]()
-    @IBOutlet weak var expiredCouponInfoLB: UILabel!
-    @IBOutlet weak var infoScroll: UIScrollView!
+    @IBOutlet weak var appTitleLB: UILabel!
+    @IBOutlet weak var expireCouponCV: UICollectionView!
     @IBOutlet weak var categoryScroll: UIScrollView!
     @IBOutlet weak var addBTN: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        configureFetchedResultsController()
+
         setUI()
-        setCategory()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         configureFetchedResultsController()
-        do {
-            try fetchedResultsController.performFetch()
-            guard let coupons = fetchedResultsController.fetchedObjects else { return }
-            self.couponList = coupons
-            if couponList.count != 0 {
-//                CouponData.shared.expire(coupons: couponList)
-            }
-            
-//            self.setExpireCouponInfoScroll()
-//            if coupons.count == 0 {
-//                expiredCouponInfoLB.text = "등록된 쿠폰이 없습니다."
-//            } else {
-//                let coupon = CouponData().couponInfo(coupons: coupons)
-//                expiredCouponInfoLB.text = coupon.expiryDate
-//            }
-            
-        } catch {
-            print("performfetch error")
-        }
+//        do {
+//            try fetchedResultsController.performFetch()
+//            guard let coupons = fetchedResultsController.fetchedObjects else { return }
+//            self.couponList = coupons
+//        } catch {
+//            print("performfetch error")
+//        }
     }
 
     func configureFetchedResultsController() {
@@ -63,37 +50,75 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate {
                                                                       sectionNameKeyPath: nil,
                                                                       cacheName: nil)
         self.fetchedResultsController.delegate = self
+        do {
+            try fetchedResultsController.performFetch()
+            guard let coupons = fetchedResultsController.fetchedObjects else { return }
+            self.couponList = coupons
+        } catch {
+            print("performfetch error")
+        }
     }
     
     func setUI() {
+        // 앱 이름 및 버전 세팅
+        let CFBundleShortVersionString = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+        appTitleLB.text = "v\(CFBundleShortVersionString!)"
+        
+        // 쿠폰 스크롤 마진 설정
+        let contentWidth = self.view.frame.size.width - 120
+        let inset = (self.view.bounds.size.width - contentWidth) / 2.0 // 셀의 양쪽 마진
+        expireCouponCV.contentInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
+        expireCouponCV.register(UINib(nibName: "ExpireCouponCell", bundle: nil), forCellWithReuseIdentifier: "ExpireCouponCell")
+        expireCouponCV.delegate = self
+        expireCouponCV.dataSource = self
+        
+        // 등록 버튼 세팅
         addBTN.layer.cornerRadius = 30
         
-//        float inset = (self.view.bounds.size.width - cellWidth) / 2.0; // 셀의 양쪽 마진
-//        let inset = 
+        // 카테고리 세팅
+        setCategory()
     }
     
-    func setExpireCouponInfoScroll() {
-        let expireList = UserDefaults.standard.object(forKey: UserDefaultKey.closeDate.rawValue) as! [Coupon]
-        var width = 0
-        
-        for idx in 0 ..< expireList.count {
-            let background = UIImageView(frame: CGRect(x: 60, y: 10, width: infoScroll.frame.size.width - 120, height: infoScroll.frame.size.height - 20))
-            background.image = UIImage(named: "ticket")
-            let infoLB = UILabel(frame: CGRect(x: background.frame.origin.x - 40, y: background.frame.origin.y + 20, width: background.frame.size.width - 40, height: background.frame.size.height - 60))
-            infoLB.text = "asdf"
-            infoLB.textAlignment = .center
-            background.addSubview(infoLB)
-            infoScroll.addSubview(background)
+    // MARK: - AddVC.Delegate - 쿠폰 등록 후 호출
+    func afterAdd(isSuccess: Bool) {
+        if isSuccess {
+            configureFetchedResultsController()
+            CouponData.shared.expire(coupons: couponList)
+            expireCouponCV.reloadData()
         }
-        
-        infoScroll.contentSize = CGSize(width: self.view.frame.size.width, height: 170)
+    }
+    
+    // MARK: - collectionView - 만료 임박
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        let expireList = UserDefaults.standard.object(forKey:UserDefaultKey.closeDate.rawValue) as? [Int32]
+        if expireList == nil {
+            return 1
+        }
+        return expireList!.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ExpireCouponCell", for: indexPath) as! ExpireCouponCell
+        if let expireList = UserDefaults.standard.object(forKey:UserDefaultKey.closeDate.rawValue) as? [Int32] {
+            let idx = Int(expireList[indexPath.item]-1)
+            cell.infoLB.text = "\(couponList[idx].name)\n\(couponList[idx].expiryDate)"
+        } else {
+            cell.infoLB.text = "등록"
+        }
+
+        return cell
+    }
+    
+    // flowlayout
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: self.view.frame.size.width - 120, height: expireCouponCV.frame.size.height)
     }
     
     // MARK: - 등록 버튼
     @IBAction func showAddVC(_ sender: UIButton) {
         let addVC = self.storyboard?.instantiateViewController(withIdentifier: "addVC") as! AddVC
         addVC.manageObjectContext = self.managedObjectContext
-        addVC.fffff = fetchedResultsController
+        addVC.delegate = self
         self.navigationController?.pushViewController(addVC, animated: true)
     }
     
