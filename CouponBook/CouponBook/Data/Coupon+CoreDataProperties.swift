@@ -17,6 +17,7 @@ extension Coupon {
         return NSFetchRequest<Coupon>(entityName: "Coupon")
     }
 
+    @NSManaged public var index: Int32
     @NSManaged public var category: String
     @NSManaged public var name: String
     @NSManaged public var price: String?

@@ -5,10 +5,11 @@
         <attribute name="contentImg" optional="YES" attributeType="Binary"/>
         <attribute name="contentText" optional="YES" attributeType="String"/>
         <attribute name="expiryDate" optional="YES" attributeType="String"/>
+        <attribute name="index" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="price" optional="YES" attributeType="String"/>
     </entity>
     <elements>
-        <element name="Coupon" positionX="-36" positionY="9" width="128" height="133"/>
+        <element name="Coupon" positionX="-36" positionY="9" width="128" height="134"/>
     </elements>
 </model>
