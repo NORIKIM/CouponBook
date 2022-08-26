@@ -30,23 +30,6 @@
                                 <rect key="frame" x="276" y="9" width="35" height="33"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="owi-cL-IKU" userLabel="정보">
-                                <rect key="frame" x="0.0" y="70" width="375" height="170"/>
-                                <subviews>
-                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="D5D-Td-ZpK">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="170"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </scrollView>
-                                </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <constraints>
-                                    <constraint firstItem="D5D-Td-ZpK" firstAttribute="top" secondItem="owi-cL-IKU" secondAttribute="top" id="6Lf-ES-I2p"/>
-                                    <constraint firstAttribute="bottom" secondItem="D5D-Td-ZpK" secondAttribute="bottom" id="BaW-EA-6JR"/>
-                                    <constraint firstItem="D5D-Td-ZpK" firstAttribute="leading" secondItem="owi-cL-IKU" secondAttribute="leading" id="GZB-61-ZZW"/>
-                                    <constraint firstAttribute="trailing" secondItem="D5D-Td-ZpK" secondAttribute="trailing" id="HnI-AX-PY8"/>
-                                    <constraint firstAttribute="height" constant="170" id="Y38-Cx-eXE"/>
-                                </constraints>
-                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T8j-jy-WSu" userLabel="카테고리">
                                 <rect key="frame" x="20" y="270" width="355" height="30"/>
                                 <subviews>
@@ -63,14 +46,6 @@
                                     <constraint firstAttribute="height" constant="30" id="vIn-kS-JY3"/>
                                 </constraints>
                             </view>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sd0-fZ-r2a">
-                                <rect key="frame" x="73" y="79" width="229" height="95"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" systemColor="systemGray4Color"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Kwm-IM-Ff9">
                                 <rect key="frame" x="0.0" y="300" width="375" height="367"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -92,33 +67,45 @@
                                     <action selector="showAddVC:" destination="ezB-vg-G2c" eventType="touchUpInside" id="DSx-o3-mm5"/>
                                 </connections>
                             </button>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="OAe-Yb-TeG">
+                                <rect key="frame" x="0.0" y="78.5" width="375" height="166.5"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="8fo-jW-DOR">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells/>
+                            </collectionView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="93o-1O-jTg"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="93o-1O-jTg" firstAttribute="bottom" secondItem="0em-PT-VNY" secondAttribute="bottom" constant="30" id="5BF-l1-s02"/>
                             <constraint firstItem="Kwm-IM-Ff9" firstAttribute="trailing" secondItem="93o-1O-jTg" secondAttribute="trailing" id="5Sp-sW-kWm"/>
+                            <constraint firstItem="OAe-Yb-TeG" firstAttribute="height" secondItem="YNE-Pe-vZ7" secondAttribute="height" multiplier="0.25" id="9Zc-1R-ZxZ"/>
                             <constraint firstItem="Kwm-IM-Ff9" firstAttribute="height" secondItem="YNE-Pe-vZ7" secondAttribute="height" multiplier="0.55" id="Dlv-C0-ggX"/>
+                            <constraint firstItem="93o-1O-jTg" firstAttribute="trailing" secondItem="OAe-Yb-TeG" secondAttribute="trailing" id="EIF-oF-Yb7"/>
                             <constraint firstItem="Aeq-39-Vlo" firstAttribute="leading" secondItem="93o-1O-jTg" secondAttribute="leading" constant="20" id="IXs-Ip-XXF"/>
                             <constraint firstAttribute="bottom" secondItem="Kwm-IM-Ff9" secondAttribute="bottom" id="NY2-5d-Frz"/>
                             <constraint firstItem="Aeq-39-Vlo" firstAttribute="top" secondItem="93o-1O-jTg" secondAttribute="top" constant="15" id="PTX-zV-ywA"/>
                             <constraint firstItem="93o-1O-jTg" firstAttribute="trailing" secondItem="T8j-jy-WSu" secondAttribute="trailing" id="Pgw-4U-zjD"/>
+                            <constraint firstItem="T8j-jy-WSu" firstAttribute="top" secondItem="OAe-Yb-TeG" secondAttribute="bottom" constant="25" id="QA7-fB-lmQ"/>
                             <constraint firstItem="T8j-jy-WSu" firstAttribute="leading" secondItem="93o-1O-jTg" secondAttribute="leading" constant="20" id="RPo-rW-ilP"/>
-                            <constraint firstItem="owi-cL-IKU" firstAttribute="trailing" secondItem="93o-1O-jTg" secondAttribute="trailing" id="XLh-QU-hqp"/>
                             <constraint firstItem="Kwm-IM-Ff9" firstAttribute="top" secondItem="T8j-jy-WSu" secondAttribute="bottom" id="Z2c-Bk-uTI"/>
-                            <constraint firstItem="T8j-jy-WSu" firstAttribute="top" secondItem="owi-cL-IKU" secondAttribute="bottom" constant="30" id="ai3-7E-Xbc"/>
                             <constraint firstItem="Kwm-IM-Ff9" firstAttribute="leading" secondItem="93o-1O-jTg" secondAttribute="leading" id="avT-UX-uIi"/>
                             <constraint firstItem="93o-1O-jTg" firstAttribute="trailing" secondItem="0em-PT-VNY" secondAttribute="trailing" constant="20" id="dfl-Vf-2zy"/>
-                            <constraint firstItem="owi-cL-IKU" firstAttribute="leading" secondItem="93o-1O-jTg" secondAttribute="leading" id="wot-fP-QrX"/>
+                            <constraint firstItem="OAe-Yb-TeG" firstAttribute="leading" secondItem="93o-1O-jTg" secondAttribute="leading" id="f76-hE-bBx"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="1gV-Z7-asN"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="addBTN" destination="0em-PT-VNY" id="o6Y-5m-fxu"/>
+                        <outlet property="appTitleLB" destination="Aeq-39-Vlo" id="wcS-uB-tPJ"/>
                         <outlet property="categoryScroll" destination="szc-l7-HtL" id="i81-tc-TLp"/>
-                        <outlet property="expiredCouponInfoLB" destination="sd0-fZ-r2a" id="5WZ-DY-Tog"/>
-                        <outlet property="infoScroll" destination="D5D-Td-ZpK" id="oLJ-lO-fZK"/>
+                        <outlet property="expireCouponCV" destination="OAe-Yb-TeG" id="oAW-Ca-Amq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7qi-BS-eTk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -707,9 +694,6 @@
         <image name="camera" catalog="system" width="128" height="94"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="systemGray4Color">
-            <color red="0.81960784313725488" green="0.81960784313725488" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemTealColor">
             <color red="0.18823529411764706" green="0.69019607843137254" blue="0.7803921568627451" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
