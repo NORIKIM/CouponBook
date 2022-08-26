@@ -12,7 +12,7 @@ import CoreData
  이미지 참조: <a href="https://www.flaticon.com/free-icons/cinema-tickets" title="cinema tickets icons">Cinema tickets icons created by murmur - Flaticon</a>
  <a href="https://www.flaticon.com/free-icons/convenience-store" title="convenience store icons">Convenience store icons created by Voysla - Flaticon</a>
  */
-class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, AddDelegate {
+class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, AddDelegate, UITableViewDelegate, UITableViewDataSource {
     var managedObjectContext: NSManagedObjectContext!
     var fetchedResultsController: NSFetchedResultsController<Coupon>!
     let category = CouponData.shared.setCategory()
@@ -21,6 +21,7 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
     @IBOutlet weak var expireCouponCV: UICollectionView!
     @IBOutlet weak var categoryScroll: UIScrollView!
     @IBOutlet weak var addBTN: UIButton!
+    @IBOutlet weak var couponTBV: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,13 +33,6 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
         super.viewWillAppear(animated)
         
         configureFetchedResultsController()
-//        do {
-//            try fetchedResultsController.performFetch()
-//            guard let coupons = fetchedResultsController.fetchedObjects else { return }
-//            self.couponList = coupons
-//        } catch {
-//            print("performfetch error")
-//        }
     }
 
     func configureFetchedResultsController() {
@@ -77,6 +71,10 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
         
         // 카테고리 세팅
         setCategory()
+        
+        couponTBV.register(UINib(nibName: "ListTBCell", bundle: nil), forCellReuseIdentifier: "listCell")
+        couponTBV.delegate = self
+        couponTBV.dataSource = self
     }
     
     // MARK: - AddVC.Delegate - 쿠폰 등록 후 호출
@@ -153,7 +151,7 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
         categoryScroll.contentSize = CGSize(width: CGFloat(width + (4 * category.count)) , height: 30)
     }
     
-    // MARK: - 쿠폰 목록 show 버튼
+    // 쿠폰 목록 show
     @objc func showListVC(_ sender: UIButton) {
         let listVC = self.storyboard?.instantiateViewController(withIdentifier: "listVC") as! ListVC
         listVC.managedObjectContext = self.managedObjectContext
@@ -164,5 +162,20 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
         self.navigationController?.pushViewController(listVC, animated: true)
     }
     
+    //MARK: - 쿠폰 목록 tableView
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        couponList.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath) as! ListTBCell
+        cell.nameLB.text = couponList[indexPath.row].name
+        cell.expiaryDateLB.text = couponList[indexPath.row].expiryDate
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        80
+    }
 }
 
