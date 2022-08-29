@@ -17,7 +17,6 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
     var fetchedResultsController: NSFetchedResultsController<Coupon>!
     let category = CouponData.shared.setCategory()
     var couponList = [Coupon]()
-    @IBOutlet weak var appTitleLB: UILabel!
     @IBOutlet weak var expireCouponCV: UICollectionView!
     @IBOutlet weak var categoryScroll: UIScrollView!
     @IBOutlet weak var addBTN: UIButton!
@@ -55,10 +54,6 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
     }
     
     func setUI() {
-        // 앱 이름 및 버전 세팅
-        let CFBundleShortVersionString = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-        appTitleLB.text = "v\(CFBundleShortVersionString!)"
-        
         // 쿠폰 스크롤 마진 설정
         let contentWidth = self.view.frame.size.width - 120
         let inset = (self.view.bounds.size.width - contentWidth) / 2.0 // 셀의 양쪽 마진

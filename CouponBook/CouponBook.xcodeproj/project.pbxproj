@@ -31,6 +31,7 @@
 		9D8CB38628B60D5A003EE288 /* ExpireCouponCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CB38428B60D5A003EE288 /* ExpireCouponCell.swift */; };
 		9D8CB38728B60D5A003EE288 /* ExpireCouponCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D8CB38528B60D5A003EE288 /* ExpireCouponCell.xib */; };
 		9D8CB38928BC3B91003EE288 /* DetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CB38828BC3B91003EE288 /* DetailVC.swift */; };
+		9D8CB38B28BC771F003EE288 /* SettingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8CB38A28BC771F003EE288 /* SettingVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +81,7 @@
 		9D8CB38428B60D5A003EE288 /* ExpireCouponCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpireCouponCell.swift; sourceTree = "<group>"; };
 		9D8CB38528B60D5A003EE288 /* ExpireCouponCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ExpireCouponCell.xib; sourceTree = "<group>"; };
 		9D8CB38828BC3B91003EE288 /* DetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DetailVC.swift; path = CouponBook/DetailVC.swift; sourceTree = SOURCE_ROOT; };
+		9D8CB38A28BC771F003EE288 /* SettingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingVC.swift; sourceTree = SOURCE_ROOT; };
 		F5761D2CE80ED7507A239BB0 /* Pods-CouponBook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CouponBook.debug.xcconfig"; path = "Target Support Files/Pods-CouponBook/Pods-CouponBook.debug.xcconfig"; sourceTree = "<group>"; };
 		F7FC567920FC45D49F8985F9 /* Pods-CouponBook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CouponBook.release.xcconfig"; path = "Target Support Files/Pods-CouponBook/Pods-CouponBook.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -124,6 +126,7 @@
 		9D6700622888EFF600985909 /* VC */ = {
 			isa = PBXGroup;
 			children = (
+				9D8CB38A28BC771F003EE288 /* SettingVC.swift */,
 				9D8CB38828BC3B91003EE288 /* DetailVC.swift */,
 				9D7EDAB02877F8A0000B7847 /* MainVC.swift */,
 				9D7EDAE72878154F000B7847 /* AddVC.swift */,
@@ -420,6 +423,7 @@
 				9D670067288A3C1C00985909 /* ListVC.swift in Sources */,
 				9D67006528890FDE00985909 /* Coupon.swift in Sources */,
 				9D7EDAE628781400000B7847 /* Coupon+CoreDataProperties.swift in Sources */,
+				9D8CB38B28BC771F003EE288 /* SettingVC.swift in Sources */,
 				9D21AFA4289D111800E8BC60 /* DatePickerVC.swift in Sources */,
 				9D7EDAAF2877F8A0000B7847 /* SceneDelegate.swift in Sources */,
 				9D8CB38628B60D5A003EE288 /* ExpireCouponCell.swift in Sources */,
