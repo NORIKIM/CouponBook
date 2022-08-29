@@ -278,9 +278,10 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         coupon.setValue(expiryDateTF.text!, forKey: "expiryDate")
         coupon.setValue(priceTF.text, forKey: "price")
         coupon.setValue(memoTV.text, forKey: "contentText")
+
         var images: Data?
         do {
-            images = try NSKeyedArchiver.archivedData(withRootObject: convertImageToData(imgArr: photos), requiringSecureCoding: true)
+            images = coreDataObjectFromImages(images: photos)//try NSKeyedArchiver.archivedData(withRootObject: convertImageToData(imgArr: photos), requiringSecureCoding: true)
         } catch {
             print("image archiveData error")
         }
@@ -306,16 +307,19 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
             self.present(alert, animated: true, completion: nil)
         }
     }
-    
+
     // coreData에 [이미지] 저장하기
-    func convertImageToData(imgArr: [UIImage]) -> [Data] {
-        var imgDataArr = [Data]()
-        imgArr.forEach({ (image) in
-            imgDataArr.append(image.pngData()!)
-        })
-        return imgDataArr
+    func coreDataObjectFromImages(images: [UIImage]) -> Data? {
+        let dataArray = NSMutableArray()
+        
+        for img in images {
+            if let data = img.pngData() {
+                dataArray.add(data)
+            }
+        }
+        
+        return try? NSKeyedArchiver.archivedData(withRootObject: dataArray, requiringSecureCoding: true)
     }
-    
 }
 
 // MARK: - extension 사진선택
