@@ -48,6 +48,7 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
             try fetchedResultsController.performFetch()
             guard let coupons = fetchedResultsController.fetchedObjects else { return }
             self.couponList = coupons
+            couponTBV.reloadData()
         } catch {
             print("performfetch error")
         }
@@ -176,6 +177,13 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         80
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let index = indexPath.row
+        let detailVC = self.storyboard?.instantiateViewController(withIdentifier: "DetailVC") as! DetailVC
+        detailVC.coupon = couponList[index]
+        self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }
 
