@@ -21,9 +21,9 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lXc-es-YOg">
                         <rect key="frame" x="20" y="10" width="280" height="60"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="default" translatesAutoresizingMaskIntoConstraints="NO" id="KwP-Nk-QBf">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="default" translatesAutoresizingMaskIntoConstraints="NO" id="KwP-Nk-QBf">
                                 <rect key="frame" x="15" y="10" width="40" height="40"/>
-                                <color key="backgroundColor" red="0.33333333329999998" green="0.42745098040000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="40" id="r0L-Gc-003"/>
                                 </constraints>
@@ -65,9 +65,9 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="categoryImg" destination="KwP-Nk-QBf" id="3in-M4-6yh"/>
                 <outlet property="expiaryDateLB" destination="zuP-mf-Ndo" id="sHA-6u-NW1"/>
                 <outlet property="nameLB" destination="Wmb-hp-yqB" id="290-Lj-uAn"/>
+                <outlet property="storeImgView" destination="KwP-Nk-QBf" id="3in-M4-6yh"/>
                 <outlet property="supView" destination="lXc-es-YOg" id="2Mi-kd-7e9"/>
             </connections>
             <point key="canvasLocation" x="132" y="130"/>
