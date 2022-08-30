@@ -17,6 +17,8 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
     var fetchedResultsController: NSFetchedResultsController<Coupon>!
     let category = CouponData.shared.setCategory()
     var couponList = [Coupon]()
+    var selectCategory = "전체"
+    var headerView: HeaderView?
     @IBOutlet weak var expireCouponCV: UICollectionView!
     @IBOutlet weak var categoryScroll: UIScrollView!
     @IBOutlet weak var addBTN: UIButton!
@@ -25,6 +27,9 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
     override func viewDidLoad() {
         super.viewDidLoad()
 
+//        headerView = expireCouponCV as? HeaderView
+//        headerView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//        headerView?.scrollView = couponTBV
         setUI()
     }
 
@@ -38,6 +43,10 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
         let fetchRequest = NSFetchRequest<Coupon>(entityName: "Coupon")
         let sortBase = NSSortDescriptor(key: "index", ascending: true)
         fetchRequest.sortDescriptors = [sortBase]
+        if selectCategory != "전체" {
+        let predicate = NSPredicate(format: "category = %@", selectCategory)
+        fetchRequest.predicate = predicate
+        }
         fetchedResultsController = NSFetchedResultsController<Coupon>(fetchRequest: fetchRequest,
                                                                       managedObjectContext: self.managedObjectContext,
                                                                       sectionNameKeyPath: nil,
@@ -52,7 +61,7 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
             print("performfetch error")
         }
     }
-    
+ 
     func setUI() {
         // 쿠폰 스크롤 마진 설정
         let contentWidth = self.view.frame.size.width - 120
@@ -97,7 +106,7 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
             let idx = Int(expireList[indexPath.item])
             cell.infoLB.text = "\(couponList[idx].name)\n\(couponList[idx].expiryDate)"
         } else {
-            cell.infoLB.text = "등록"
+            cell.infoLB.text = "등록된 쿠폰이 없습니다.\n쿠폰을 등록해주세요!"
         }
 
         return cell
@@ -149,13 +158,8 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
     
     // 쿠폰 목록 show
     @objc func showListVC(_ sender: UIButton) {
-        let listVC = self.storyboard?.instantiateViewController(withIdentifier: "listVC") as! ListVC
-        listVC.managedObjectContext = self.managedObjectContext
-        
-        guard let title = sender.titleLabel?.text else { return }
-        listVC.category = title
-        
-        self.navigationController?.pushViewController(listVC, animated: true)
+        selectCategory = sender.currentTitle!
+        configureFetchedResultsController()
     }
     
     //MARK: - 쿠폰 목록 tableView
@@ -165,8 +169,11 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath) as! ListTBCell
-        cell.nameLB.text = couponList[indexPath.row].name
-        cell.expiaryDateLB.text = couponList[indexPath.row].expiryDate
+        let coupon = couponList[indexPath.row]
+        
+        cell.storeImgView.image = UIImage(named: storeImage(coupon.name))
+        cell.nameLB.text = coupon.name
+        cell.expiaryDateLB.text = coupon.expiryDate
         return cell
     }
     
@@ -179,6 +186,25 @@ class MainVC: UIViewController, NSFetchedResultsControllerDelegate, UICollection
         let detailVC = self.storyboard?.instantiateViewController(withIdentifier: "DetailVC") as! DetailVC
         detailVC.coupon = couponList[index]
         self.navigationController?.pushViewController(detailVC, animated: true)
+    }
+    
+    func storeImage(_ storeName: String) -> String {
+        switch storeName {
+        case "스타벅스", "스벅", "starbucks", "starbuck":
+            return "스타벅스"
+        case "cu", "씨유", "시유":
+            return "cu"
+        case "seven11", "seven24/7", "seven 11", "seven 24/7", "seven 24", "세븐일레븐", "세븐11", "세븐":
+            return "seven11"
+        case "bluebottle","blue bottle", "블루보틀", "블루 보틀":
+            return "블루보틀"
+        case "coffeebean", "커피빈":
+            return "커피빈"
+        case _ where storeName.contains("롯데"), _ where storeName.contains("lotte"):
+            return "lotte"
+        default:
+            return "default"
+        }
     }
 }
 
