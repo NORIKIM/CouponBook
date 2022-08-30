@@ -154,7 +154,7 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         self.scroll.contentInset = contentInsets
         self.scroll.scrollIndicatorInsets = contentInsets
-        let scrollPoint = CGPoint(x: 0, y: self.scroll.frame.origin.y)
+        let scrollPoint = CGPoint(x: 0, y: 0)//self.scroll.frame.origin.y
         self.scroll.setContentOffset(scrollPoint, animated: false)
     }
     
@@ -262,7 +262,7 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: CGFloat(keyboardSize), right: 0)
         self.scroll.contentInset = contentInsets
         self.scroll.scrollIndicatorInsets = contentInsets
-        let scrollPoint = CGPoint(x: 0, y: Int(self.scroll.frame.origin.y) + keyboardSize)
+        let scrollPoint = CGPoint(x: 0, y: Int(self.scroll.frame.origin.y)+35)//Int(self.scroll.frame.origin.y) + keyboardSize
         self.scroll.setContentOffset(scrollPoint, animated: true)
     }
  
