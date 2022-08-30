@@ -21,7 +21,7 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
     var keyboardSize = 0
     var isKeyboardShowing = false
     var coupon: Coupon?
-    var category: UIButton!
+    var selectCategory: UIButton!
     var photoArr = [UIImageView]()
     var clearArr = [UIButton]()
     var photos = [UIImage]()
@@ -45,6 +45,9 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
     }
     // Outlet
     @IBOutlet weak var scroll: UIScrollView!
+    @IBOutlet weak var categoryTitleLB: UILabel!
+    @IBOutlet weak var storeNameTitleLB: UILabel!
+    @IBOutlet weak var expireTitleLB: UILabel!
     @IBOutlet weak var nameTF: UITextField!
     @IBOutlet weak var expiryDateTF: UITextField!
     @IBOutlet weak var priceTF: UITextField!
@@ -88,6 +91,19 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
     }
     
     func setUI() {
+        let categoryRange = ("분류 *" as NSString).range(of: "*")
+        let categoryAttributedString = NSMutableAttributedString.init(string: "분류 *")
+        categoryAttributedString.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.red, range: categoryRange)
+        categoryTitleLB.attributedText = categoryAttributedString
+        let storeRange = ("상호 *" as NSString).range(of: "*")
+        let storeAttributedString = NSMutableAttributedString.init(string: "상호 *")
+        storeAttributedString.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.red, range: storeRange)
+        storeNameTitleLB.attributedText = storeAttributedString
+        let expireRange = ("유효기간 *" as NSString).range(of: "*")
+        let expireAttributedString = NSMutableAttributedString.init(string: "유효기간 *")
+        expireAttributedString.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.red, range: expireRange)
+        expireTitleLB.attributedText = expireAttributedString
+        
         // scroll tap 키보드 내림
         let scrollTapKeyboardHide = UITapGestureRecognizer(target: self, action: #selector(scrollTapKeyboardHide(sender:)))
         scroll.addGestureRecognizer(scrollTapKeyboardHide)
@@ -165,12 +181,12 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
     
     // MARK: - IBAction - 분류
     @IBAction func categoryTap(_ sender: UIButton) {
-        if sender != category {
+        if sender != selectCategory {
             sender.backgroundColor = UIColor(red: 210, green: 249, blue: 245, alpha: 1)
-            if category != nil {
-                category.backgroundColor = UIColor.white
+            if selectCategory != nil {
+                selectCategory.backgroundColor = UIColor.white
             }
-            category = sender
+            selectCategory = sender
         }
     }
         
@@ -268,12 +284,25 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
  
     // MARK: - IBAction - 등록
     @IBAction func registTap(_ sender: UIButton) {
+        if selectCategory == nil  {
+            makeAlert(for: "분류를 선택해주세요.")
+            return
+        }
+        if nameTF.text == nil || nameTF.text == "" {
+            makeAlert(for: "상호를 입력해주세요.")
+            return
+        }
+        if expiryDateTF.text == nil || expiryDateTF.text == "" {
+            makeAlert(for: "유효기간을 선택해주세요.")
+            return
+        }
+            
         let entityName =  NSEntityDescription.entity(forEntityName: Coupon.entityName, in: manageObjectContext)!
         let coupon = NSManagedObject(entity: entityName, insertInto: manageObjectContext)
         let index = UserDefaults.standard.integer(forKey: UserDefaultKey.index.rawValue)
         
         coupon.setValue(index, forKey: "index")
-        coupon.setValue(category.titleLabel?.text, forKey: "category")
+        coupon.setValue(selectCategory.titleLabel!.text, forKey: "category")
         coupon.setValue(nameTF.text!, forKey: "name")
         coupon.setValue(expiryDateTF.text!, forKey: "expiryDate")
         coupon.setValue(priceTF.text, forKey: "price")
@@ -281,7 +310,7 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
 
         var images: Data?
         do {
-            images = coreDataObjectFromImages(images: photos)//try NSKeyedArchiver.archivedData(withRootObject: convertImageToData(imgArr: photos), requiringSecureCoding: true)
+            images = coreDataObjectFromImages(images: photos)
         } catch {
             print("image archiveData error")
         }
@@ -319,6 +348,15 @@ class AddVC: UIViewController, NSFetchedResultsControllerDelegate, DatePickerDel
         }
         
         return try? NSKeyedArchiver.archivedData(withRootObject: dataArray, requiringSecureCoding: true)
+    }
+    
+    // 알럿 세팅
+    func makeAlert(for misInput: String) {
+        let alert = UIAlertController(title: nil, message: misInput,
+                                      preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alert.addAction(okAction)
+        self.present(alert, animated: true, completion: nil)
     }
 }
 
